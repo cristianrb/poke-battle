@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+import "rpc_poke_stats.proto";
+
+service PokeStats {
+  rpc GetPokeStats (PokeStatsRequest) returns (PokeStatsResponse);
+}

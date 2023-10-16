@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+message PokeStatsRequest {
+  string pokemon = 1;
+}
+
+message PokeStatsResponse {
+  string pokemon = 1;
+  int64 wins = 2;
+  int64 loses = 3;
+  float winrate = 4;
+}
