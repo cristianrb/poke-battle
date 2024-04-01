@@ -36,6 +36,7 @@ func (s *Server) GetPokeStats(ctx context.Context, in *pb.PokeStatsRequest) (*pb
 		return nil, err
 	}
 
+	println(pokeStats.Winrate)
 	return &pb.PokeStatsResponse{
 		Pokemon: pokeStats.Pokemon,
 		Wins:    pokeStats.Wins,

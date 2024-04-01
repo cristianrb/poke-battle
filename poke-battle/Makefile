@@ -1,5 +1,8 @@
 DB_URL=postgresql://root:secret@localhost:5432/pokebattle?sslmode=disable
 
+build:
+	go build -o bin/pokebattle
+
 run:
 	go run main.go
 

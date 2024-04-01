@@ -11,9 +11,8 @@ import (
 	server "poke-stats/server"
 )
 
-var addr = "0.0.0.0:50050"
-
 func main() {
+	addr := os.Getenv("POKE_BATTLE_STATS_ADDR")
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("Failed to listen on: %v\n", err)
@@ -28,6 +27,7 @@ func main() {
 	sqlStore := db.NewSQLStore(connPool)
 
 	s := server.NewServer(sqlStore)
+	fmt.Printf("Started poke battle stats on %s\n", addr)
 	err = s.Start(lis)
 	if err != nil {
 		log.Fatalf("Failed to serve: %v", err)

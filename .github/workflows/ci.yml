@@ -1,0 +1,181 @@
+name: CI Poke Battle App
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup GO
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21
+
+      - name: Create poke battle bin
+        run: |
+          cd poke-battle
+          go build -o bin/pokebattle          
+
+      - name: Create poke battle stats bin
+        run: |
+          cd poke-battle-stats
+          go build -o bin/pokebattlestats
+
+      - name: Create poke long battle bin
+        run: |
+          cd poke-long-battle
+          go build -o bin/pokelongbattle
+
+      - name: Upload PokeBattle Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pokebattle
+          path: ./poke-battle/bin/pokebattle
+          retention-days: 1
+
+      - name: Upload PokeBattleStats Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pokebattlestats
+          path: ./poke-battle-stats/bin/pokebattlestats
+          retention-days: 1
+
+      - name: Upload PokeLongBattle Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pokelongbattle
+          path: ./poke-long-battle/bin/pokelongbattle
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() && github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download PokeBattle artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: pokebattle
+
+      - name: Download PokeBattleStats artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: pokebattlestats
+
+      - name: Download PokeLongBattle artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: pokelongbattle
+
+      - name: Get version info
+        run: |
+          POKE_BATTLE_VERSION=$(cat poke-battle/version)
+          POKE_BATTLE_STATS_VERSION=$(cat poke-battle-stats/version)
+          POKE_LONG_BATTLE_VERSION=$(cat poke-long-battle/version)
+          
+          echo "POKE_BATTLE_VERSION=${POKE_BATTLE_VERSION} >> $GITHUB_ENV
+          echo "POKE_BATTLE_STATS_VERSION=${POKE_BATTLE_STATS_VERSION} >> $GITHUB_ENV
+          echo "POKE_LONG_BATTLE_VERSION=${POKE_LONG_BATTLE_VERSION} >> $GITHUB_ENV
+
+      - name: Check pokeBattleTag version already exists as a git tag
+        id: pokeBattleTag
+        uses: mukuntu/tag-exists-action@v1.6.0
+        with:
+          tag: 'v${{ env.POKE_BATTLE_VERSION }}'
+
+      - name: Check pokeBattleStatsTag version already exists as a git tag
+        id: pokeBattleStatsTag
+        uses: mukuntu/tag-exists-action@v1.6.0
+        with:
+          tag: 'v${{ env.POKE_BATTLE_STATS_VERSION }}'
+
+      - name: Check pokeLongBattleTag version already exists as a git tag
+        id: pokeLongBattleTag
+        uses: mukuntu/tag-exists-action@v1.6.0
+        with:
+          tag: 'v${{ env.POKE_LONG_BATTLE_VERSION }}'
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker push pokeBattle
+        id: dcrhub_pb
+        if: ${{ steps.pokeBattleTag.output.exists == 'false' }}
+        working-directory: poke-battle
+        run: |
+          docker build -t=${{ env.REGISTRY }}/pokebattle:${{ env.POKE_BATTLE_VERSION }} .
+          docker push ${{ env.REGISTRY }}/pokebattle:${{ env.POKE_BATTLE_VERSION }}
+          echo "POKE_BATTLE_VERSION_TAG=${{ env.POKE_BATTLE_VERSION }}" >> $GITHUB_ENV
+          echo "poke_battle_version=${{ env.POKE_BATTLE_VERSION }}" >> $GITHUB_ENV
+
+      - name: Create version tag
+        uses: actions/github-script@v7
+        if: ${{ steps.dcrhub_pb.outputs.poke_battle_version }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/v${process.env.POKE_BATTLE_VERSION_TAG}`,
+              sha: context.sha
+            })
+
+
+      - name: Docker push pokeBattleStats
+        id: dcrhub_pbs
+        if: ${{ steps.pokeBattleStatsTag.output.exists == 'false' }}
+        working-directory: poke-battle-stats
+        run: |
+          docker build -t=${{ env.REGISTRY }}/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }} .
+          docker push ${{ env.REGISTRY }}/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }}
+          echo "POKE_BATTLE_STATS_VERSION=${{ env.POKE_BATTLE_STATS_VERSION }}" >> $GITHUB_ENV
+          echo "poke_battle_stats_version=${{ env.POKE_BATTLE_STATS_VERSION }}" >> $GITHUB_ENV
+
+      - name: Create version tag
+        uses: actions/github-script@v7
+        if: ${{ steps.dcrhub_pbs.outputs.poke_battle_stats_version }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/v${process.env.POKE_BATTLE_STATS_VERSION}`,
+              sha: context.sha
+            })
+
+
+      - name: Docker push pokeLongBattle
+        id: dcrhub_plb
+        if: ${{ steps.pokeLongBattleTag.output.exists == 'false' }}
+        working-directory: poke-long-battle
+        run: |
+          docker build -t=${{ env.REGISTRY }}/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }} .
+          docker push ${{ env.REGISTRY }}/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }}
+          echo "POKE_LONG_BATTLE_VERSION=${{ env.POKE_LONG_BATTLE_VERSION }}" >> $GITHUB_ENV
+          echo "poke_long_battle_version=${{ env.POKE_LONG_BATTLE_VERSION }}" >> $GITHUB_ENV
+
+      - name: Create version tag
+        uses: actions/github-script@v7
+        if: ${{ steps.dcrhub_plb.outputs.poke_long_battle_version }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/v${process.env.POKE_LONG_BATTLE_VERSION}`,
+              sha: context.sha
+            })

@@ -117,3 +117,4 @@ fabric.properties
 ./*/.idea
 ./*/.idea/**
 poke-battle/db-data
+./ops/docker/db-data

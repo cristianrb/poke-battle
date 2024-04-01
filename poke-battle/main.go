@@ -25,7 +25,8 @@ func main() {
 	sqlStore := db.NewSQLStore(connPool)
 	pokeApiClient := api.NewHTTPClient("https://pokeapi.co/api/v2/")
 
-	gRPCConn, err := grpc.Dial("localhost:50050", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	pokeBattleStatsAddr := os.Getenv("POKE_BATTLE_STATS_ADDR")
+	gRPCConn, err := grpc.Dial(pokeBattleStatsAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to gRPC server: %v\n", err)
 		os.Exit(1)
@@ -56,7 +57,9 @@ func main() {
 	sender := event.NewRabbitMQSender(ch, q.Name)
 
 	server := api.NewServer(sqlStore, pokeApiClient, gRPCClient, sender)
-	err = server.Start(":8080")
+	serverAddr := os.Getenv("POKE_BATTLE_ADDR")
+	fmt.Printf("Started poke battle on %s\n", serverAddr)
+	err = server.Start(serverAddr)
 	if err != nil {
 		println("Fatal error")
 	}

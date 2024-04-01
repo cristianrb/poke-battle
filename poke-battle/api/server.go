@@ -154,6 +154,8 @@ func (server *Server) getStats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Printf("%s", stats.Pokemon)
+	println("test")
 	w.WriteHeader(http.StatusAccepted)
 	err = json.NewEncoder(w).Encode(stats)
 	if err != nil {
