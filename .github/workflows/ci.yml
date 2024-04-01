@@ -119,7 +119,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/v${process.env.POKE_BATTLE_VERSION_TAG}`,
+              ref: `refs/tags/pb-${process.env.POKE_BATTLE_VERSION_TAG}`,
               sha: context.sha
             })
 
@@ -148,7 +148,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/v${process.env.POKE_BATTLE_STATS_VERSION}`,
+              ref: `refs/tags/pbs-${process.env.POKE_BATTLE_STATS_VERSION}`,
               sha: context.sha
             })
 
@@ -177,6 +177,6 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/v${process.env.POKE_LONG_BATTLE_VERSION}`,
+              ref: `refs/tags/plb-${process.env.POKE_LONG_BATTLE_VERSION}`,
               sha: context.sha
             })
