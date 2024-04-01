@@ -87,19 +87,19 @@ jobs:
 
       - name: Check pokeBattleTag version already exists as a git tag
         id: pokeBattleTag
-        uses: mukuntu/tag-exists-action@v1.6.0
+        uses: mukunku/tag-exists-action@v1.6.0
         with:
           tag: 'v${{ env.POKE_BATTLE_VERSION }}'
 
       - name: Check pokeBattleStatsTag version already exists as a git tag
         id: pokeBattleStatsTag
-        uses: mukuntu/tag-exists-action@v1.6.0
+        uses: mukunku/tag-exists-action@v1.6.0
         with:
           tag: 'v${{ env.POKE_BATTLE_STATS_VERSION }}'
 
       - name: Check pokeLongBattleTag version already exists as a git tag
         id: pokeLongBattleTag
-        uses: mukuntu/tag-exists-action@v1.6.0
+        uses: mukunku/tag-exists-action@v1.6.0
         with:
           tag: 'v${{ env.POKE_LONG_BATTLE_VERSION }}'
 
