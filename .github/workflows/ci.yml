@@ -64,16 +64,19 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: pokebattle
+          path: ./poke-battle/bin/pokebattle
 
       - name: Download PokeBattleStats artifact
         uses: actions/download-artifact@v3
         with:
           name: pokebattlestats
+          path: ./poke-battle-stats/bin/pokebattlestats
 
       - name: Download PokeLongBattle artifact
         uses: actions/download-artifact@v3
         with:
           name: pokelongbattle
+          path: ./poke-long-battle/bin/pokelongbattle
 
       - name: Get version info
         run: |
