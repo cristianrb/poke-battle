@@ -102,8 +102,8 @@ jobs:
         if: ${{ steps.pokeBattleTag.output.exists != 'true' }}
         working-directory: poke-battle
         run: |
-          docker build -t=${{ env.REGISTRY }}/pokebattle:${{ env.POKE_BATTLE_VERSION }} .
-          docker push ${{ env.REGISTRY }}/pokebattle:${{ env.POKE_BATTLE_VERSION }}
+          docker build -t=cristianrb/pokebattle:${{ env.POKE_BATTLE_VERSION }} .
+          docker push cristianrb/pokebattle:${{ env.POKE_BATTLE_VERSION }}
           echo "POKE_BATTLE_VERSION_TAG=pb-${{ env.POKE_BATTLE_VERSION }}" >> $GITHUB_ENV
           echo "poke_battle_version=pb-${{ env.POKE_BATTLE_VERSION }}" >> $GITHUB_ENV
 
@@ -131,8 +131,8 @@ jobs:
         if: ${{ steps.pokeBattleStatsTag.output.exists != 'true' }}
         working-directory: poke-battle-stats
         run: |
-          docker build -t=${{ env.REGISTRY }}/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }} .
-          docker push ${{ env.REGISTRY }}/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }}
+          docker build -t=cristianrb/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }} .
+          docker push cristianrb/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }}
           echo "POKE_BATTLE_STATS_VERSION=pbs-${{ env.POKE_BATTLE_STATS_VERSION }}" >> $GITHUB_ENV
           echo "poke_battle_stats_version=pbs-${{ env.POKE_BATTLE_STATS_VERSION }}" >> $GITHUB_ENV
 
@@ -160,8 +160,8 @@ jobs:
         if: ${{ steps.pokeLongBattleTag.output.exists != 'true' }}
         working-directory: poke-long-battle
         run: |
-          docker build -t=${{ env.REGISTRY }}/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }} .
-          docker push ${{ env.REGISTRY }}/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }}
+          docker build -t=cristianrb/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }} .
+          docker push cristianrb/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }}
           echo "POKE_LONG_BATTLE_VERSION=plb-${{ env.POKE_LONG_BATTLE_VERSION }}" >> $GITHUB_ENV
           echo "poke_long_battle_version=plb-${{ env.POKE_LONG_BATTLE_VERSION }}" >> $GITHUB_ENV
 
