@@ -99,7 +99,7 @@ jobs:
 
       - name: Docker push pokeBattle
         id: dcrhub_pb
-        if: ${{ steps.pokeBattleTag.output.exists == 'false' }}
+        if: ${{ steps.pokeBattleTag.output.exists != 'true' }}
         working-directory: poke-battle
         run: |
           docker build -t=${{ env.REGISTRY }}/pokebattle:${{ env.POKE_BATTLE_VERSION }} .
@@ -128,7 +128,7 @@ jobs:
 
       - name: Docker push pokeBattleStats
         id: dcrhub_pbs
-        if: ${{ steps.pokeBattleStatsTag.output.exists == 'false' }}
+        if: ${{ steps.pokeBattleStatsTag.output.exists != 'true' }}
         working-directory: poke-battle-stats
         run: |
           docker build -t=${{ env.REGISTRY }}/pokebattlestats:${{ env.POKE_BATTLE_STATS_VERSION }} .
@@ -157,7 +157,7 @@ jobs:
 
       - name: Docker push pokeLongBattle
         id: dcrhub_plb
-        if: ${{ steps.pokeLongBattleTag.output.exists == 'false' }}
+        if: ${{ steps.pokeLongBattleTag.output.exists != 'true' }}
         working-directory: poke-long-battle
         run: |
           docker build -t=${{ env.REGISTRY }}/pokelongbattle:${{ env.POKE_LONG_BATTLE_VERSION }} .
