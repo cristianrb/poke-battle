@@ -81,9 +81,9 @@ jobs:
           POKE_BATTLE_STATS_VERSION=$(cat poke-battle-stats/version)
           POKE_LONG_BATTLE_VERSION=$(cat poke-long-battle/version)
           
-          echo "POKE_BATTLE_VERSION=${POKE_BATTLE_VERSION} >> $GITHUB_ENV
-          echo "POKE_BATTLE_STATS_VERSION=${POKE_BATTLE_STATS_VERSION} >> $GITHUB_ENV
-          echo "POKE_LONG_BATTLE_VERSION=${POKE_LONG_BATTLE_VERSION} >> $GITHUB_ENV
+          echo "POKE_BATTLE_VERSION=${POKE_BATTLE_VERSION}" >> $GITHUB_ENV
+          echo "POKE_BATTLE_STATS_VERSION=${POKE_BATTLE_STATS_VERSION}" >> $GITHUB_ENV
+          echo "POKE_LONG_BATTLE_VERSION=${POKE_LONG_BATTLE_VERSION}" >> $GITHUB_ENV
 
       - name: Check pokeBattleTag version already exists as a git tag
         id: pokeBattleTag
